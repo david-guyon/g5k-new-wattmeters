@@ -6,9 +6,9 @@ You need to execute this script from **within** Grid'5000. It generates a _power
 
 ### Example:
 
-'''
+```
 python wattmeters.py nova-1 1540562403 1540567403 
-'''
+```
 
 ### Inputs:
 
