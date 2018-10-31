@@ -93,7 +93,7 @@ def parse_csv(filename, port, output_file, t_start, t_end):
                 timestamp = row[index]
                 short_timestamp = int(timestamp.split('.')[0])
                 if t_start <= short_timestamp <= t_end:
-                    value = row[index+port]
+                    value = row[index+1+port]
                     output_file.write(timestamp + ' ' + value + '\n')
                     if graph:
                         saved_timestamps.append(float(timestamp))
