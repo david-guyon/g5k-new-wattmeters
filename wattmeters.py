@@ -36,6 +36,7 @@ Script written by David Guyon (david <at> guyon <dot> me).
 Creation date: 26/10/2018
 Last update: 29/10/2018
 """
+import re
 import sys
 import json
 import datetime
