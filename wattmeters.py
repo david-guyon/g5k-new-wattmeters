@@ -67,24 +67,29 @@ def parse_csv(filename, port, output_file, t_start, t_end):
     with open(output_file, 'a') as output_file:
         with open(filename, 'r') as csv_file: 
             csv_reader = reader(csv_file, delimiter=',')
+
+            def search_timestamp(row):
+                index = 0
+                for item in row:
+                    if re.match(r"^([0-9]{10}).([0-9]{9})$", item):
+                        return index
+                    index += 1
+                print("### DEBUG ###")
+                print("Could not find timestamp in row\nIgnoring the following line")
+                print(row)
+                
+
             for row in csv_reader:
-                if len(row) < 3:  # last line of CSV file may not contain power values
-                    break
-                elif len(row) != 46:  # power line should always have 46 values
-                    print("### DEBUG ###")
-                    print("data line does not have 46 items")
-                    print(len(row))
-                    print(row)
-                    sys.exit(-1)
-                if row[3] != "OK":
+                index = search_timestamp(row)
+                if row[index+1] != "OK":
                     print("### DEBUG ###")
                     print('status of wattmeter for the following line is NOT OK')
                     print(row)
                     sys.exit(-1)
-                timestamp = row[2]
+                timestamp = row[index]
                 short_timestamp = int(timestamp.split('.')[0])
                 if t_start <= short_timestamp <= t_end:
-                    value = row[4+port]
+                    value = row[index+port]
                     output_file.write(timestamp + ' ' + value + '\n')
                     if graph:
                         saved_timestamps.append(float(timestamp))
