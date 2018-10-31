@@ -82,6 +82,9 @@ def parse_csv(filename, port, output_file, t_start, t_end):
 
             for row in csv_reader:
                 index = search_timestamp(row)
+                if index is None:
+                    continue
+
                 if row[index+1] != "OK":
                     print("### DEBUG ###")
                     print('status of wattmeter for the following line is NOT OK')
