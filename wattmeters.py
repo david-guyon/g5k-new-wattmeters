@@ -168,7 +168,7 @@ for year in range(start_year, end_year+1):
                 print(" * current working date: %d/%d/%d at %dh" % (day, month, year, hour))
 
                 now = datetime.datetime.now()
-                filename="power.csv.%d-%d-%dT%d" % (year, month, day, hour)
+                filename="power.csv.%d-%02d-%02dT%02d" % (year, month, day, hour)
                 url = "http://wattmetre.lyon.grid5000.fr/data/%s-log/%s" % (wattmeter, filename)
                 if day == now.day and month == now.month and year == now.year and hour == now.hour:
                     wget_cmd = "wget %s" % url
