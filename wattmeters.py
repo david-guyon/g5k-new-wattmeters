@@ -139,7 +139,7 @@ end_hour = end_date.hour
 node = sys.argv[1].lower()
 cluster = node.split('-')[0]
 print("Getting wattmeter information from %s" % node)
-curl_cmd = "curl -s https://api.grid5000.fr/stable/sites/lyon/clusters/" + cluster + "/nodes/" + node
+curl_cmd = "curl -s -k https://api.grid5000.fr/stable/sites/lyon/clusters/" + cluster + "/nodes/" + node
 output = exec_bash(curl_cmd).decode('utf-8')
 if "401 Unauthorized" in output:
     print("You need to execute this script from WITHIN Grid'5000")
