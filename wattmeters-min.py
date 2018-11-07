@@ -28,13 +28,9 @@ Attributes:
     timestamp-stop (int): timestamp from when to stop getting the
         power values.
 
-    graph (string): by passing 'graph' as the 4th parameter, the
-        script generates a 'power.png' image that contains the
-        plot of the retrieved data.
-
 Script written by David Guyon (david <at> guyon <dot> me).
 Creation date: 26/10/2018
-Last update: 6/11/2018
+Last update: 7/11/2018
 """
 import re
 import sys
@@ -44,7 +40,6 @@ from csv import reader
 from os import path, remove
 from subprocess import Popen, PIPE
 from datetime import datetime as dt
-from matplotlib import pyplot as plt
 
 def exec_bash(cmd):
     process = Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
@@ -100,22 +95,9 @@ def parse_csv(filename, port, output_file, t_start, t_end):
                         saved_values.append(float(value))
     
 
-def generate_graph():
-    plt.plot(saved_timestamps, saved_values)
-    plt.xlabel('time')
-    plt.ylabel('power consumption')
-    plt.tight_layout()
-    plt.savefig('power.png')
-
-    
-
 if len(sys.argv) < 4:
     print("Required arguments: <node (e.g. nova-1)> <timestamp-start> <timestamp-end>")
     sys.exit()
-
-# check if 'graph' option is set
-if len(sys.argv) >= 5 and sys.argv[4] is "graph":
-    graph = True
 
 ###
 # Prepare date/time variables
@@ -184,5 +166,3 @@ for year in range(start_year, end_year+1):
 
 print("Power values are available in 'power.csv'")
 
-if graph:
-    generate_graph()
