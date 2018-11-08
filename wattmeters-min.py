@@ -53,12 +53,6 @@ def exec_bash(cmd):
     return output
 
 
-# variables used for the graph generation
-# optimization to avoid to load the file again
-graph = False
-saved_timestamps = list()
-saved_values = list()
-
 def parse_csv(filename, port, output_file, t_start, t_end):
     with open(output_file, 'a') as output_file:
         with open(filename, 'r') as csv_file: 
@@ -74,7 +68,6 @@ def parse_csv(filename, port, output_file, t_start, t_end):
                 print("Could not find timestamp in row\nIgnoring the following line")
                 print(row)
                 
-
             for row in csv_reader:
                 index = search_timestamp(row)
                 if index is None:
@@ -90,9 +83,6 @@ def parse_csv(filename, port, output_file, t_start, t_end):
                 if t_start <= short_timestamp <= t_end:
                     value = row[index+2+port]
                     output_file.write(timestamp + ' ' + value + '\n')
-                    if graph:
-                        saved_timestamps.append(float(timestamp))
-                        saved_values.append(float(value))
     
 
 if len(sys.argv) < 4:
