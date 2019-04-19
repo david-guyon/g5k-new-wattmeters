@@ -33,6 +33,7 @@ Creation date: 26/10/2018
 Last update:   19/04/2019
 """
 
+import sys
 import lib
 import json
 from os import path, remove
@@ -44,7 +45,6 @@ start, end, nodes = lib.get_config()
 ###
 # Get wattmeter/port information
 for node in nodes:
-    node = sys.argv[1].lower()
     cluster = node.split('-')[0]
     print("Getting wattmeter information from %s" % node)
     curl_cmd = "curl -s -k https://api.grid5000.fr/stable/sites/lyon/clusters/" + cluster + "/nodes/" + node
