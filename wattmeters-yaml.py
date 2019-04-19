@@ -48,7 +48,7 @@ for node in nodes:
     cluster = node.split('-')[0]
     print("Getting wattmeter information from %s" % node)
     curl_cmd = "curl -s -k https://api.grid5000.fr/stable/sites/lyon/clusters/" + cluster + "/nodes/" + node
-    output = exec_bash(curl_cmd).decode('utf-8')
+    output = lib.exec_bash(curl_cmd).decode('utf-8')
     if "401 Unauthorized" in output:
         print("You need to execute this script from WITHIN Grid'5000")
         sys.exit()
@@ -83,12 +83,12 @@ for year in range(start_year, end_year+1):
                 url = "http://wattmetre.lyon.grid5000.fr/data/%s-log/%s" % (wattmeter, filename)
                 if day == now.day and month == now.month and year == now.year and hour == now.hour:
                     wget_cmd = "wget %s" % url
-                    exec_bash(wget_cmd)
+                    lib.exec_bash(wget_cmd)
                 else:
                     wget_cmd = "wget %s.gz" % url
-                    exec_bash(wget_cmd)
+                    lib.exec_bash(wget_cmd)
                     gzip_cmd = "gunzip -f %s.gz" % filename
-                    exec_bash(gzip_cmd)
+                    lib.exec_bash(gzip_cmd)
                 parse_csv(filename, port, power_csv, timestamp_start, timestamp_end)
                 remove(filename)
                 print("   data retrieved and parsed with success")
