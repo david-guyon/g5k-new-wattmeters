@@ -111,10 +111,12 @@ if path.exists(power_csv):
 ###
 # For each hour between start and end, get power values
 print("Getting power values")
-for year in range(start_year, end_year+1):
-    for month in range(start_month, end_month+1):
-        for day in range(start_day, end_day+1):
-            for hour in range(start_hour, end_hour+1):
+# /!\ this loop does not work properly (i.e. 28/08/2019 -> 02/09/2019, day range is wrong)
+# TO BE FIXED IN LATER VERSION
+for year in range(start.year, end.year+1):
+    for month in range(start.month, end.month+1):
+        for day in range(start.day, end.day+1):
+            for hour in range(start.hour, end.hour+1):
                 print(" * current working date: %d/%d/%d at %dh" % (day, month, year, hour))
 
                 now = datetime.datetime.now()
