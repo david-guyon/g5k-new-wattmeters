@@ -58,7 +58,7 @@ for node in nodes:
 
     # skip node if not equiped with wattmeter
     if not json_data['sensors']['power']['per_outlets']:
-        print("[w] node %s ignored because it is not equiped with a wattmeter")
+        print("[w] node %s ignored because it is not equiped with a wattmeter" % node)
         continue
 
     pdu = json_data['sensors']['power']['via']['pdu'][0]
@@ -74,10 +74,10 @@ for node in nodes:
 ###
 # Download raw data and uncompress if needed
 print("Getting power values")
-for year in range(start_year, end_year+1):
-    for month in range(start_month, end_month+1):
-        for day in range(start_day, end_day+1):
-            for hour in range(start_hour, end_hour+1):
+for year in range(start.year, end.year+1):
+    for month in range(start.month, end.month+1):
+        for day in range(start.day, end.day+1):
+            for hour in range(start.hour, end.hour+1):
                 print(" * current working date: %d/%d/%d at %dh" % (day, month, year, hour))
 
                 now = datetime.datetime.now()
