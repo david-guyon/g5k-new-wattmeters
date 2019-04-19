@@ -44,6 +44,7 @@ start, end, nodes = lib.get_config()
 
 ###
 # Get wattmeter/port information
+analyzed_nodes = dict()
 for node in nodes:
     cluster = node.split('-')[0]
     print("Getting wattmeter information from %s" % node)
@@ -53,11 +54,21 @@ for node in nodes:
         print("You need to execute this script from WITHIN Grid'5000")
         sys.exit()
     json_data = json.loads(output)
+
+    # skip node if not equiped with wattmeter
+    if not json_data['sensors']['power']['per_outlets']:
+        print("[w] node %s ignored because it is not equiped with a wattmeter")
+        continue
+
     pdu = json_data['sensors']['power']['via']['pdu'][0]
     wattmeter = pdu['uid']
     port = pdu['port']
-    print("pdu=%s ; wattmeter=%s ; port=%s" % (pdu, wattmeter, port))
+    if wattmeter not in analyzed_nodes:
+        # create wattmeter entry in dict
+        analyzed_nodes[wattmeter] = dict()
+    analyzed_nodes[wattmeter][port] = node
 
+print(analyzed_nodes)
 sys.exit(1)
 
 
@@ -89,7 +100,7 @@ for year in range(start_year, end_year+1):
                     lib.exec_bash(wget_cmd)
                     gzip_cmd = "gunzip -f %s.gz" % filename
                     lib.exec_bash(gzip_cmd)
-                parse_csv(filename, port, power_csv, timestamp_start, timestamp_end)
+                lib.parse_csv(filename, port, power_csv, timestamp_start, timestamp_end)
                 remove(filename)
                 print("   data retrieved and parsed with success")
 
