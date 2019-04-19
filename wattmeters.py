@@ -30,7 +30,7 @@ Attributes:
 
 Script written by David Guyon (david <at> guyon <dot> me).
 Creation date: 26/10/2018
-Last update:   02/04/2018
+Last update:   02/04/2019
 """
 
 import re
