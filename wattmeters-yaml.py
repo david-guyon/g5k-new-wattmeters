@@ -36,6 +36,7 @@ Last update:   19/04/2019
 import sys
 import lib
 import json
+import pprint
 from os import path, remove
 
 
@@ -68,7 +69,34 @@ for node in nodes:
         analyzed_nodes[wattmeter] = dict()
     analyzed_nodes[wattmeter][port] = node
 
-print(analyzed_nodes)
+#pprint.pprint(analyzed_nodes)
+
+###
+# Download raw data and uncompress if needed
+print("Getting power values")
+for year in range(start_year, end_year+1):
+    for month in range(start_month, end_month+1):
+        for day in range(start_day, end_day+1):
+            for hour in range(start_hour, end_hour+1):
+                print(" * current working date: %d/%d/%d at %dh" % (day, month, year, hour))
+
+                now = datetime.datetime.now()
+                filename="power.csv.%d-%02d-%02dT%02d" % (year, month, day, hour)
+                
+                for wattmeter in analyzed_nodes.keys():
+                    print(wattmeter)
+                    url = "http://wattmetre.lyon.grid5000.fr/data/%s-log/%s" % (wattmeter, filename)
+                    if day == now.day and month == now.month and year == now.year and hour == now.hour:
+                        wget_cmd = "wget %s" % url
+                        lib.exec_bash(wget_cmd)
+                        lib.exec_bash('ls')
+                    else:
+                        wget_cmd = "wget %s.gz" % url
+                        lib.exec_bash(wget_cmd)
+                        gzip_cmd = "gunzip -f %s.gz" % filename
+                        lib.exec_bash(gzip_cmd)
+                        lib.exec_bash('ls')
+
 sys.exit(1)
 
 
