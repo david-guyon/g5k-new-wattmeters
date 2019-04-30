@@ -86,14 +86,11 @@ while analyzed_hour <= end_hour:
         url = "http://wattmetre.lyon.grid5000.fr/data/%s-log/%s" % (wattmeter, filename)
         # if analyzed hour is equal to current hour
         if analyzed_hour >= current_hour:
-            wget_cmd = "wget %s" % url
-            lib.exec_bash(wget_cmd)
-            lib.exec_bash('ls')
+            lib.exec_bash("wget %s" % url)
+            lib.exec_bash('mv %s %s-%s' % (filename, filename, wattmeter))
         else:
-            wget_cmd = "wget %s.gz" % url
-            lib.exec_bash(wget_cmd)
-            gzip_cmd = "gunzip -f %s.gz" % filename
-            lib.exec_bash(gzip_cmd)
+            lib.exec_bash("wget %s.gz" % url)
+            lib.exec_bash("gunzip -f %s-%s.gz" % (filename, wattmeter))
     analyzed_hour += datetime.timedelta(hours=1)
 
 sys.exit(1)
