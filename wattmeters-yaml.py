@@ -90,6 +90,7 @@ while analyzed_hour <= end_hour:
             lib.exec_bash('mv %s %s-%s' % (filename, filename, wattmeter))
         else:
             lib.exec_bash("wget %s.gz" % url)
+            lib.exec_bash('mv %s.gz %s-%s.gz' % (filename, filename, wattmeter))
             lib.exec_bash("gunzip -f %s-%s.gz" % (filename, wattmeter))
     analyzed_hour += datetime.timedelta(hours=1)
 
