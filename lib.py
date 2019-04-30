@@ -22,6 +22,14 @@ def get_config():
         return start, end, config['nodes']
 
 
+def date_to_hour(d):
+    return d.replace(minute=0, second=0, microsecond=0)
+
+
+def get_current_hour():
+    return dt.now().replace(minute=0, second=0, microsecond=0)
+
+
 def exec_bash(cmd):
     process = Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
     output, error = process.communicate()

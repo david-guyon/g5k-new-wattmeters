@@ -30,13 +30,14 @@ Attributes:
 
 Script written by David Guyon (david <at> guyon <dot> me).
 Creation date: 26/10/2018
-Last update:   19/04/2019
+Last update:   30/04/2019
 """
 
 import sys
 import lib
 import json
 import pprint
+import datetime
 from os import path, remove
 
 
@@ -74,28 +75,26 @@ for node in nodes:
 ###
 # Download raw data and uncompress if needed
 print("Getting power values")
-for year in range(start.year, end.year+1):
-    for month in range(start.month, end.month+1):
-        for day in range(start.day, end.day+1):
-            for hour in range(start.hour, end.hour+1):
-                print(" * current working date: %d/%d/%d at %dh" % (day, month, year, hour))
-
-                now = datetime.datetime.now()
-                filename="power.csv.%d-%02d-%02dT%02d" % (year, month, day, hour)
-                
-                for wattmeter in analyzed_nodes.keys():
-                    print(wattmeter)
-                    url = "http://wattmetre.lyon.grid5000.fr/data/%s-log/%s" % (wattmeter, filename)
-                    if day == now.day and month == now.month and year == now.year and hour == now.hour:
-                        wget_cmd = "wget %s" % url
-                        lib.exec_bash(wget_cmd)
-                        lib.exec_bash('ls')
-                    else:
-                        wget_cmd = "wget %s.gz" % url
-                        lib.exec_bash(wget_cmd)
-                        gzip_cmd = "gunzip -f %s.gz" % filename
-                        lib.exec_bash(gzip_cmd)
-                        lib.exec_bash('ls')
+analyzed_hour = lib.date_to_hour(start)
+end_hour = lib.date_to_hour(end)
+current_hour = lib.get_current_hour()
+while analyzed_hour <= end_hour:
+    print(" * dowloading raw data for date %s" % analyzed_hour.strftime("%d %b %Y at %HH"))
+    filename="power.csv.%s" % analyzed_hour.strftime("%Y-%m-%dT%H")
+    for wattmeter in analyzed_nodes.keys():
+        print(wattmeter)
+        url = "http://wattmetre.lyon.grid5000.fr/data/%s-log/%s" % (wattmeter, filename)
+        # if analyzed hour is equal to current hour
+        if analyzed_hour >= current_hour:
+            wget_cmd = "wget %s" % url
+            lib.exec_bash(wget_cmd)
+            lib.exec_bash('ls')
+        else:
+            wget_cmd = "wget %s.gz" % url
+            lib.exec_bash(wget_cmd)
+            gzip_cmd = "gunzip -f %s.gz" % filename
+            lib.exec_bash(gzip_cmd)
+    analyzed_hour += datetime.timedelta(hours=1)
 
 sys.exit(1)
 
