@@ -78,22 +78,25 @@ print("Getting power values")
 analyzed_hour = lib.date_to_hour(start)
 end_hour = lib.date_to_hour(end)
 current_hour = lib.get_current_hour()
+total_size = 0
 while analyzed_hour <= end_hour:
     print(" * dowloading raw data for date %s" % analyzed_hour.strftime("%d %b %Y at %HH"))
     filename="power.csv.%s" % analyzed_hour.strftime("%Y-%m-%dT%H")
     for wattmeter in analyzed_nodes.keys():
-        print(wattmeter)
         url = "http://wattmetre.lyon.grid5000.fr/data/%s-log/%s" % (wattmeter, filename)
         # if analyzed hour is equal to current hour
         if analyzed_hour >= current_hour:
             lib.exec_bash("wget %s" % url)
             lib.exec_bash('mv %s %s-%s' % (filename, filename, wattmeter))
+        # if not...
         else:
             lib.exec_bash("wget %s.gz" % url)
             lib.exec_bash('mv %s.gz %s-%s.gz' % (filename, filename, wattmeter))
             lib.exec_bash("gunzip -f %s-%s.gz" % (filename, wattmeter))
+        # save total downloaded size of data
+        total_size += path.getsize("%s-%s" % (filename, wattmeter))
     analyzed_hour += datetime.timedelta(hours=1)
-
+print(" * total downloaded size: %dMB" % (total_size/1000000))
 sys.exit(1)
 
 
